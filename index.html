@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>题库交互版 · 招标代理/造价工程师 · 2025-09-27 09:17</title>
+<style>
+  :root { --bg:#0b1220; --card:#121a2b; --soft:#1a2338; --text:#e8eefc; --muted:#9fb0d0; --accent:#5aa9ff; --good:#29cc7a; --bad:#ff6b6b; --border:#22304f; }
+  *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(8px);background:rgba(11,18,32,0.7);border-bottom:1px solid var(--border)}
+  .wrap{max-width:1200px;margin:0 auto;padding:12px 16px} .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .brand{font-size:19px;font-weight:800;letter-spacing:.3px;color:var(--text)} .pill{background:var(--soft);border:1px solid var(--border);padding:8px 10px;border-radius:999px;display:inline-flex;gap:8px;align-items:center}
+  input[type="text"]{background:transparent;border:none;outline:none;color:var(--text);min-width:220px}
+  .select,select{background:var(--soft);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:12px}
+  .btn{padding:9px 14px;border-radius:12px;border:1px solid var(--border);background:var(--soft);color:var(--text);cursor:pointer} .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:linear-gradient(135deg,#2a72ff,#00c2ff);border:none;color:#fff} .btn.ghost{background:transparent}
+  .statbar{display:flex;gap:12px;flex-wrap:wrap} .stat{background:var(--card);border:1px solid var(--border);padding:10px 12px;border-radius:12px;min-width:120px}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px} @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(15,23,42,.04)} .qhead{display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .qid{font:700 12px/1 monospace;color:var(--muted)} .qtype{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid color-mix(in oklab, var(--accent) 30%, transparent);color:var(--accent);background:color-mix(in oklab, var(--accent) 6%, transparent);font-weight:600;letter-spacing:.3px}
+  .qtext{margin:10px 0 10px;font-size:15px;line-height:1.55;font-weight:500}.opts label{display:flex;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;background:var(--card);cursor:pointer;transition:border-color .15s,background .15s;font-size:14px;line-height:1.55}.opts label:hover{border-color:color-mix(in oklab, var(--accent) 40%, var(--border));background:color-mix(in oklab, var(--accent) 4%, var(--card))}.opts b{color:var(--accent);font-weight:700;margin-right:2px}
+  .opts input{margin-top:3px} .feedback{margin-top:10px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px} .good{color:var(--good)} .bad{color:var(--bad)} .opts input[type="radio"]:checked, .opts input[type="checkbox"]:checked{accent-color:var(--accent)}
+  .ans{margin-top:10px;padding:12px 14px;border:1px solid var(--answer-border);border-radius:12px;background:var(--answer-bg);font-size:14px;line-height:1.6}.ans.bad{border-color:color-mix(in oklab, var(--bad) 50%, transparent);background:color-mix(in oklab, var(--bad) 7%, var(--card))} .tags{color:var(--muted);font-size:12px;margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+  .tag{background:var(--soft);color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:3px 10px;font-size:11px} .footer{text-align:center;color:var(--muted);padding:30px 0}
+  .hr{height:1px;background:var(--border);margin:10px 0} .hidden{display:none} .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:999px;border:1px solid var(--border);font-size:12px}
+  .switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer} .switch input{width:36px;height:18px;appearance:none;background:#2a334a;border-radius:999px;position:relative;outline:none;transition:all .2s}
+  .switch input:checked{background:#2a72ff} .switch input:after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:999px;transition:left .2s} .switch input:checked:after{left:20px}
+  .sticky-controls{position:sticky;top:60px;z-index:40;background:rgba(11,18,32,0.6);backdrop-filter:saturate(1.1) blur(6px);border-bottom:1px solid var(--border)}
+  .exambar{display:flex;gap:10px;align-items:center;flex-wrap:wrap} .progress{height:10px;background:#1b2742;border-radius:12px;overflow:hidden} .progress>span{display:block;height:100%;background:linear-gradient(90deg,#2a72ff,#00c2ff)}
+</style>
+<!-- Injected: theme & layout styles -->
+<style>
+  :root{--bg:#0b1220;--card:#121a2b;--soft:#1a2338;--text:#e8eefc;--muted:#9fb0d0;--accent:#5aa9ff;--good:#29cc7a;--bad:#ff6b6b;--border:#22304f}
+  html[data-theme="dark"]{--bg:#0b1220;--card:#121a2b;--soft:#1a2338;--text:#e8eefc;--muted:#9fb0d0;--accent:#5aa9ff;--good:#29cc7a;--bad:#ff6b6b;--border:#22304f;--border-strong:#2d3a5b;--answer-bg:rgba(41,204,122,.08);--answer-border:rgba(41,204,122,.45)}
+  html[data-theme="light"]{--bg:#f5f6fa;--card:#ffffff;--soft:#eef1f7;--text:#0f172a;--muted:#64748b;--accent:#2563eb;--good:#16a34a;--bad:#dc2626;--border:#d4dae6;--border-strong:#cbd2e0;--answer-bg:#f0fdf4;--answer-border:#86efac}
+  html[data-theme="sepia"]{--bg:#f4efe6;--card:#fbf7ef;--soft:#efe6d9;--text:#3b2f2a;--muted:#8f7f75;--accent:#c87334;--good:#2e8b57;--bad:#c04b4b;--border:#e3d6c4;--border-strong:#d6c5ad;--answer-bg:#e6f3ea;--answer-border:#86c1a0}
+  html[data-theme="green"]{--bg:#e8f3e8;--card:#f3faf3;--soft:#e0f0e0;--text:#203120;--muted:#667866;--accent:#2aa775;--good:#1d8a5a;--bad:#c04545;--border:#cfe3cf;--border-strong:#b5d3b5;--answer-bg:#d8efde;--answer-border:#7cba8c}
+  body{background:var(--bg);color:var(--text)}
+  .tk-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:900px){.tk-grid{grid-template-columns:1fr 1fr}}
+  body.one-col .tk-grid{grid-template-columns:1fr!important}
+  .tk-pill{background:var(--soft);border:1px solid var(--border);padding:6px 8px;border-radius:999px;display:inline-flex;gap:8px;align-items:center}
+  .tk-select{background:var(--soft);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:10px}
+  .tk-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0}
+  .tk-sticky{position:sticky;top:60px;z-index:40;background:color-mix(in oklab,var(--bg) 70%,transparent);backdrop-filter:saturate(1.1) blur(6px);border-bottom:1px solid var(--border)}
+</style>
+<style>
+/* === Final Polish: align bar + clean background === */
+.tk-sticky{
+  position: sticky;
+  top: 60px;
+  z-index: 40;
+  background: var(--bg) !important;     /* 跟随主题底色 */
+  border: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.tk-sticky > .wrap{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 16px;                     /* 与 header 内边距一致 */
+  background: transparent !important;
+}
+.tk-toolbar{
+  display: flex;
+  justify-content: center;               /* 居中 */
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+/* 胶囊与下拉的细节 */
+.tk-pill{
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.tk-select{
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  outline: none;
+}
+.tk-select:hover{ border-color: var(--accent); }
+.tk-select:focus{ box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 30%, transparent); }
+
+/* 如果你有上一条吸顶条（.sticky-controls），也统一成主题底色并消除缝隙 */
+.sticky-controls{
+  background: var(--bg) !important;
+  border-bottom: 1px solid var(--border) !important;
+  margin-bottom: 0 !important;
+}
+.sticky-controls + .tk-sticky{ margin-top: 0 !important; }
+</style>
+<style>
+/* —— 顶部控件对齐与胶囊统一 —— */
+
+/* 1) 顶部这一行里的所有东西垂直居中 */
+header .row{ align-items:center !important; }
+
+/* 2) 让“只看未做 / 随机顺序”这类开关长成胶囊，和左侧风格一致 */
+header .switch{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:8px;
+  padding:6px 12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:999px;
+  line-height:1;              /* 去掉文本行高干扰 */
+}
+
+/* 3) 统一开关尺寸与对齐（高度≈左侧胶囊） */
+header .switch input{
+  width:44px;                 /* 原生滑块宽度 */
+  height:24px;
+  margin:0;                   /* 清默认外边距，防止顶起 */
+  vertical-align:middle;
+  position:relative; top:1px; /* 如果看着还高/低，改成 0 或 2 */
+}
+
+/* 圆点手柄尺寸与位置（配合你之前的:after做法） */
+header .switch input:after{
+  width:18px; height:18px;
+  top:3px; left:3px;
+}
+header .switch input:checked:after{ left:23px; }
+
+/* 4) 左侧“单选/多选/判断”那排也按胶囊对齐 */
+header .pill label{
+  display:inline-flex; align-items:center;
+  gap:6px; line-height:1;
+  padding:6px 10px;           /* 让每一项看起来是独立小胶囊 */
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--card);
+}
+header .pill input[type="checkbox"]{
+  width:16px; height:16px; margin:0; vertical-align:middle; position:relative; top:1px;
+  accent-color:var(--accent);
+}
+
+/* 5) 统一这排控件的视觉高度（可根据喜好把 38/40 微调一两像素） */
+header .pill, header .btn, header .select, header .switch{
+  min-height:38px;
+}
+</style>
+<style>
+/* 放到样式最后，统一外观与高度 */
+.tk-toolbar{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; align-items:center; }
+
+.tk-toolbar .pill-filters{            /* 被搬来的“单选/多选/判断”胶囊组 */
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:8px 12px;
+}
+
+/* 每个子项也做成小胶囊，文字与方框垂直居中 */
+.tk-toolbar .pill-filters label{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 10px; border:1px solid var(--border);
+  border-radius:999px; background:var(--soft);
+}
+.tk-toolbar .pill-filters label:hover{ border-color: var(--accent); }
+
+.tk-toolbar .pill-filters input[type="checkbox"]{
+  width:16px; height:16px; margin:0; position:relative; top:1px;
+  vertical-align:middle; accent-color: var(--accent);
+}
+
+/* 保证整排控件等高、对齐 */
+.tk-toolbar .tk-pill, 
+.tk-toolbar .pill-filters,
+.tk-toolbar .tk-select{ min-height:38px; }
+</style>
+<style>
+/* —— 顶部第一行：对齐与靠右收口 —— */
+
+/* 1) 第一行统一为 flex，垂直居中、可换行 */
+header .wrap .row:first-of-type{
+  display:flex !important;
+  align-items:center !important;
+  flex-wrap:wrap;
+  gap:12px;
+  padding-bottom:8px;              /* 下面那条细分隔线的留白，可按喜好调 */
+  border-bottom:1px solid var(--border);
+}
+
+/* 2) 清掉里层控件的随机 margin，避免把布局“顶歪” */
+header .wrap .row:first-of-type > *{ margin:0 !important; }
+
+/* 3) 把“最后一组控件”（一般就是只看未做/随机顺序）推到最右 */
+header .wrap .row:first-of-type > *:last-child{
+  margin-left:auto !important;     /* 关键：把最后一块贴到右侧 */
+  display:flex; align-items:center; gap:12px;
+}
+
+/* 4) 统一这一行里所有控件的高度与垂直对齐 */
+header .wrap .row:first-of-type .pill,
+header .wrap .row:first-of-type .btn,
+header .wrap .row:first-of-type .select,
+header .wrap .row:first-of-type .switch{
+  min-height:40px;                 /* 与你的胶囊高度一致 */
+  display:inline-flex; align-items:center;
+  line-height:1;
+}
+
+/* 5) 开关本体微调（防止基线误差） */
+header .wrap .row:first-of-type .switch input{
+  margin:0; vertical-align:middle; position:relative; top:1px; /* 觉得高/低就改 0/2 */
+}
+</style>
+</head>
+<style>
+/* 顶部“单选/多选/判断”复选框对齐修正 */
+header .pill label{
+  display:inline-flex;          /* 让文字和勾选框同一行盒模型 */
+  align-items:center;           /* 垂直居中 */
+  gap:6px;                      /* 图标与文字间距 */
+  line-height:1;                /* 去掉不必要的行高影响 */
+}
+
+/* 具体到 checkbox 的微调 */
+header .pill input[type="checkbox"]{
+  width:16px; height:16px;      /* 统一尺寸（可按喜好调 14–18） */
+  margin:0;                     /* 清掉默认外边距 */
+  vertical-align:middle;        /* 防止基线错位 */
+  position:relative; top:1px;   /* 微抬 1px；若仍偏，可改成 0 或 2 */
+  accent-color: var(--accent);  /* 用主题色渲染勾选框 */
+}
+/* 让每个选项看起来像独立的小胶囊 */
+header .pill label{
+  padding:6px 10px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--card);
+}
+header .pill label:hover{ border-color: var(--accent); }
+</style>
+<body>
+<header>
+  <div class="wrap row">
+    <div class="brand">题库交互版 · 造价/招标代理</div>
+    <div class="pill">🔎 <input id="kw" type="text" placeholder="搜索题干/选项（回车）"/></div>
+    <select id="mode" class="select" title="学习模式">
+      <option value="browse">浏览刷题</option><option value="flash">闪卡模式</option><option value="exam">模拟考试</option><option value="wrong">错题本</option>
+    </select>
+    <button id="exportBtn" class="btn">导出进度</button>
+    <label class="btn ghost">导入进度<input id="importFile" type="file" accept=".json" style="display:none"/></label>
+    <div class="pill">
+      <label class="switch"><span>只看未做</span><input id="onlyNew" type="checkbox"/></label>
+      <label class="switch"><span>随机顺序</span><input id="shuffle" type="checkbox"/></label>
+    </div>
+  </div>
+  <div class="wrap sticky-controls">
+    <div class="row">
+      <div class="pill">
+        <label><input type="checkbox" id="f_single" checked/> 单选</label>
+        <label style="margin-left:8px"><input type="checkbox" id="f_multi" checked/> 多选</label>
+        <label style="margin-left:8px"><input type="checkbox" id="f_tf" checked/> 判断</label>
+      </div>
+      <div class="statbar" id="statbar"></div>
+    </div>
+  </div>
+<style>
+/* 顶部两条条带统一配色与边界 —— 放到 CSS 末尾 */
+header,
+.sticky-controls,
+.tk-sticky{
+  background: var(--bg) !important;     /* 和页面同底色 */
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 宽度、内边距与 header 对齐 */
+.tk-sticky > .wrap,
+.sticky-controls > .wrap,
+header > .wrap{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 16px !important;
+  background: transparent !important;
+}
+
+/* 两条之间不留缝 */
+.sticky-controls + .tk-sticky{ margin-top: 0 !important; }
+
+/* 下拉行居中与间距 */
+.tk-toolbar{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; align-items:center; }
+.tk-pill{ background: var(--soft); border:1px solid var(--border); border-radius:999px; padding:8px 12px; display:inline-flex; gap:10px; align-items:center; }
+.tk-select{ background:transparent; border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:10px; outline:none; }
+.tk-select:hover{ border-color: var(--accent); }
+.tk-select:focus{ box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 30%, transparent); }
+</style>
+</header>
+<!-- Injected: theme & layout controls -->
+<div class="tk-sticky">
+  <div class="tk-toolbar">
+    <div class="tk-pill">🎨 主题
+      <select id="themeSelect" class="tk-select">
+        <option value="dark">深色</option>
+        <option value="light">浅色</option>
+        <option value="sepia">米黄</option>
+        <option value="green">护眼绿</option>
+      </select>
+    </div>
+    <div class="tk-pill">📐 布局
+      <select id="layoutSelect" class="tk-select">
+        <option value="multi">多列（自适应）</option>
+        <option value="one">一行一题</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div id="flashPane" class="hidden"></div>
+  <div id="examPane" class="hidden"></div>
+  <div id="listPane">
+    <div id="grid" class="grid"></div>
+    <div style="text-align:center; margin-top:10px;"><button id="loadMore" class="btn">加载更多</button></div>
+  </div>
+</main>
+
+<div class="footer">后端版 · 进度云端同步（多端可用）· 数据库 SQLite · 数据源：招标代理2025考试题库</div>
+
+<!-- 题库数据已迁移至后端数据库，启动时通过 /api/questions/all/legacy 拉取 -->
+<script>
+(function() {
+  // ====== 后端版数据层 ======
+  // 1) device_id：免登录多端同步的钥匙，首次生成存 localStorage
+  const DEVICE_KEY = "zk_device_id";
+  function getDeviceId(){
+    let id = localStorage.getItem(DEVICE_KEY);
+    if(!id){ id = "dev-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,8); localStorage.setItem(DEVICE_KEY, id); }
+    return id;
+  }
+  const DEVICE_ID = getDeviceId();
+  const API = "/api";
+
+  // 2) 题库与进度都改为后端拉取
+  let Q = [];
+  let progress = {};
+
+  async function bootstrap(){
+    // 先尝试后端,失败则用本地 questions.json (GitHub Pages 静态部署场景)
+    let usedSource = "offline";
+    let offlineNotice = null;
+
+    // —— 先试后端 ——
+    try {
+      // 1) 注册/确认用户
+      try {
+        await fetch(API, {method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({device_id: DEVICE_ID})});
+      } catch(e){ console.warn("user upsert failed (continuing)", e); }
+
+      // 2) 拉全部题目
+      const ctrl = new AbortController();
+      const tid = setTimeout(()=>ctrl.abort(), 2500);
+      const r = await fetch(API+"/questions/all/legacy?device_id="+encodeURIComponent(DEVICE_ID), {signal: ctrl.signal});
+      clearTimeout(tid);
+      if(r.ok){
+        const j = await r.json();
+        if(j && j.items && j.items.length > 0){
+          Q = j.items;
+          usedSource = "backend";
+          // 把后端 status 回填到本地 progress
+          Q.forEach(qt=>{ if(qt.status){ progress[qt.qid] = { status: qt.status, attempts:0, ts:Date.now() }; } });
+        }
+      }
+      // 3) 拉服务端进度汇总
+      if(usedSource === "backend"){
+        try {
+          const sr = await fetch(API+"/progress/summary?device_id="+encodeURIComponent(DEVICE_ID));
+          if(sr.ok){ window.__serverSummary = await sr.json(); }
+        } catch(e){ console.warn("summary failed", e); }
+      }
+    } catch(err){
+      console.warn("[bootstrap] 后端不可用,降级到本地题库:", err.message||err);
+    }
+
+    // —— 后端没拿到,从本地 questions.json 取 ——
+    if(Q.length === 0){
+      try {
+        const r = await fetch("questions.json");
+        if(r.ok){
+          const j = await r.json();
+          Q = (j && j.items) ? j.items : [];
+          usedSource = "offline";
+          console.log("[bootstrap] 加载本地题库:", Q.length, "题");
+        }
+      } catch(e){
+        console.error("[bootstrap] 本地题库也加载失败:", e);
+      }
+    }
+
+    // —— 始终从 localStorage 读一份进度（无后端场景也能用） ——
+    try{
+      const local = JSON.parse(localStorage.getItem(progressKey) || "{}");
+      // 合并：服务端 status 优先,本地 attempts/ts 补足
+      for(const k in local){
+        if(!progress[k]) progress[k] = local[k];
+        else if(!progress[k].attempts && local[k].attempts) progress[k].attempts = local[k].attempts;
+      }
+    } catch(_){}
+
+    // —— 渲染 ——
+    try { updateStats(); resetAndRender(); } catch(e){ console.error(e); }
+
+    // —— 顶部数据源指示条 ——
+    if(usedSource === "backend"){
+      const tip = document.createElement('div');
+      tip.className='card';
+      tip.style.padding = '8px 14px';
+      tip.style.fontSize = '12px';
+      tip.style.color = 'var(--muted)';
+      tip.style.borderColor = 'color-mix(in oklab, var(--good) 35%, transparent)';
+      tip.style.background = 'color-mix(in oklab, var(--good) 6%, transparent)';
+      tip.textContent = '☁️ 后端已连接 · 进度云端同步（多端可用）';
+      document.querySelector('main').prepend(tip);
+    } else if(Q.length > 0){
+      const tip = document.createElement('div');
+      tip.className='card';
+      tip.style.padding = '8px 14px';
+      tip.style.fontSize = '12px';
+      tip.style.color = 'var(--muted)';
+      tip.style.borderColor = 'var(--border)';
+      tip.style.background = 'var(--soft)';
+      tip.innerHTML = '📦 静态模式 · 题库已内置,进度保存在本机浏览器 localStorage。开启后端可多端同步,见 <a href="README.md" style="color:var(--accent)">README</a>。';
+      document.querySelector('main').prepend(tip);
+    } else {
+      const warn = document.createElement('div');
+      warn.className='card';
+      warn.textContent = '⚠️ 题库未加载(0 题)。';
+      warn.style.borderColor = 'var(--bad)';
+      document.querySelector('main').prepend(warn);
+    }
+  }
+
+  let filters = { types: new Set(["single","multiple","truefalse"]), onlyNew:false, shuffle:false, kw:"", mode:"browse" };
+  let page = 0, pageSize = 24, list = [];
+  const progressKey = "zk_qa_progress_v1";
+  const grid = document.getElementById('grid');
+  const statbar = document.getElementById('statbar');
+  const listPane = document.getElementById('listPane');
+  const flashPane = document.getElementById('flashPane');
+  const examPane = document.getElementById('examPane');
+  // progress 由 bootstrap() 异步初始化（不再从 localStorage 同步读）
+
+  on('#f_single','change', e=>toggleType('single', e.target.checked));
+  on('#f_multi','change', e=>toggleType('multiple', e.target.checked));
+  on('#f_tf','change', e=>toggleType('truefalse', e.target.checked));
+  on('#onlyNew','change', e=>{filters.onlyNew = e.target.checked; resetAndRender();});
+  on('#shuffle','change', e=>{filters.shuffle = e.target.checked; resetAndRender();});
+  on('#kw','keydown', e=>{ if(e.key==='Enter') {filters.kw = e.target.value.trim(); resetAndRender();} });
+  on('#mode','change', e=>{filters.mode = e.target.value; switchMode();});
+  on('#loadMore','click', ()=>renderMore());
+  on('#exportBtn','click', ()=>exportProgress());
+  on('#importFile','change', e=>importProgress(e.target.files[0]));
+
+  function on(sel, ev, fn){ document.querySelector(sel).addEventListener(ev, fn); }
+
+  function loadProgress(){ try{ return JSON.parse(localStorage.getItem(progressKey) || '{}'); } catch(_) { return {}; } }
+  function saveProgress(){ localStorage.setItem(progressKey, JSON.stringify(progress)); updateStats(); }
+  function updateStats(){
+    const total = Q.length;
+    let done=0,right=0,wrong=0,mastered=0;
+    for(let i=0;i<Q.length;i++){ const q=Q[i]; const p=progress[q.qid]; if(p&&p.status){done++; if(p.status==='right')right++; else if(p.status==='wrong')wrong++; else if(p.status==='mastered')mastered++;} }
+    statbar.innerHTML = '';
+    const items = [['总题数',total],['已作答',done],['正确',right],['错误',wrong],['掌握',mastered],['正确率',done?Math.round(100*right/done)+'%':'—']];
+    for(let it of items){ const div=document.createElement('div'); div.className='stat'; div.innerHTML=`<div style="color:var(--muted);font-size:12px;">${it[0]}</div><div style="font-weight:700;font-size:18px;">${it[1]}</div>`; statbar.appendChild(div);}
+  }
+  function toggleType(t, on){ on?filters.types.add(t):filters.types.delete(t); resetAndRender(); }
+  function matchKw(q, kw){ if(!kw) return true; const tgt=(q.question+' '+q.options.join(' ')).toLowerCase(); return tgt.includes(kw.toLowerCase()); }
+  function pickList(){ let arr=Q.filter(q=>filters.types.has(q.type)&&matchKw(q,filters.kw)); if(filters.onlyNew) arr=arr.filter(q=>!(progress[q.qid]&&progress[q.qid].status)&&!(progress[q.qid]&&progress[q.qid].status==='right')); if(filters.mode==='wrong') arr=arr.filter(q=>progress[q.qid]&&progress[q.qid].status==='wrong'); if(filters.shuffle) shuffle(arr); return arr; }
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} }
+  function resetAndRender(){ page=0; list=pickList(); grid.innerHTML=''; renderMore(true); updateStats(); }
+  function renderMore(initial){ if(initial) window.scrollTo({top:0,behavior:'smooth'}); const start=page*pageSize,end=Math.min(start+pageSize,list.length); for(let i=start;i<end;i++) addCard(list[i]); page++; document.getElementById('loadMore').style.display=(end>=list.length)?'none':'inline-block'; }
+
+  function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  function addCard(q){
+    const card=document.createElement('div'); card.className='card'; card.id='q_'+q.qid;
+    const p=progress[q.qid]||{}; let badge='⏳ 未作答', bcol='#445';
+    if(p.status==='right'){badge='✅ 已掌握'; bcol='#1f9f63';} else if(p.status==='wrong'){badge='❌ 待复习'; bcol='#a43d3d';} else if(p.status==='mastered'){badge='✅ 已掌握'; bcol='#1f9f63';}
+    card.innerHTML = `
+      <div class="qhead"><div class="qid">${q.qid}</div><div class="qtype">${q.type==='single'?'单选':q.type==='multiple'?'多选':'判断'}题</div></div>
+      <div class="qtext">${escapeHtml(q.question)}</div>
+      <div class="opts">${renderOptions(q)}</div>
+      <div class="row">
+        <button class="btn" data-act="check">判题</button>
+        <button class="btn ghost" data-act="show">显示答案</button>
+        <button class="btn ghost" data-act="master">我会了</button>
+        <button class="btn ghost" data-act="wrong">加入错题本</button>
+        <div style="flex:1"></div>
+        <div><span class="badge" style="border-color:${bcol}">${badge}</span></div>
+      </div>
+      <div class="feedback"></div>
+      <div class="ans hidden"></div>
+      <div class="tags"><span class="tag">${q.category||'未分组'}</span></div>`;
+    card.addEventListener('click', e=>onCardClick(e,q,card));
+    grid.appendChild(card);
+  }
+
+  function renderOptions(q){
+    if(q.type==='truefalse') return ['正确','错误'].map((t,i)=>`<label><input type="radio" name="opt_${q.qid}" value="${i===0?'T':'F'}"/>${t}</label>`).join('');
+    const L=['A','B','C','D']; const isM=q.type==='multiple';
+    return q.options.map((opt,i)=> opt? `<label><input type="${isM?'checkbox':'radio'}" name="opt_${q.qid}" value="${L[i]}"/> <b>${L[i]}.</b> ${escapeHtml(opt)}</label>` : '').join('');
+  }
+
+  function onCardClick(e,q,card){
+    const act=e.target.getAttribute('data-act'); if(!act) return;
+    const fb=card.querySelector('.feedback'); const ans=card.querySelector('.ans');
+    if(act==='show'){ ans.classList.remove('hidden'); ans.innerHTML=formatAnswer(q); return; }
+    if(act==='master'){ setProgress(q,'mastered',false); refreshBadge(card,'✅ 已掌握','#1f9f63'); return; }
+    if(act==='wrong'){ setProgress(q,'wrong',true); refreshBadge(card,'❌ 待复习','#a43d3d'); return; }
+    if(act==='check'){ const selected=getSelected(q); const ok=checkAnswer(q,selected); fb.innerHTML= ok?'<span class="good">✅ 回答正确</span>':'<span class="bad">❌ 回答错误</span>'; ans.classList.remove('hidden'); ans.innerHTML=formatAnswer(q,selected); setProgress(q, ok?'right':'wrong', true); refreshBadge(card, ok?'✅ 已掌握':'❌ 待复习', ok?'#1f9f63':'#a43d3d'); }
+  }
+
+  // 把进度同步到后端（多端同步核心）
+  function syncToServer(q, status){
+    if(!q || !q.id) return;
+    // 后端判题按 selected，这里把 status 翻译成等价 selected：
+    //   right/mastered -> 选正确答案；wrong -> 选一个错误项
+    let selected = [];
+    if(q.type==='truefalse'){
+      selected = (status==='wrong') ? (q.answer ? [1] : [0]) : (q.answer ? [0] : [1]);
+    } else {
+      const ans = q.answer || '';
+      if(status==='wrong'){
+        // 选一个错项（A 之外）
+        const wrongIdx = ans.charAt(0)==='A' ? 1 : 0;
+        selected = [wrongIdx];
+      } else {
+        selected = ans.split('').map(ch=>'ABCDEFGH'.indexOf(ch));
+      }
+    }
+    const body = { device_id: DEVICE_ID, question_id: q.id, selected, mode: filters.mode||'browse' };
+    fetch(API+'/progress/submit', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}).catch(e=>console.warn('sync failed', e));
+  }
+  function refreshBadge(card,text,color){ const badge=card.querySelector('.badge'); if(badge){badge.textContent=text; badge.style.borderColor=color;} }
+  function setProgress(q, status, inc){
+    const p=progress[q.qid]||{};
+    p.status=status;
+    p.attempts=(p.attempts||0)+(inc?1:0);
+    p.ts=Date.now();
+    progress[q.qid]=p;
+    saveProgress();
+    // 静态模式下跳过同步;后端模式才 POST
+    if(window.__backendOk){
+      syncToServer(q, status);
+    }
+  }
+  function getSelected(q){ if(q.type==='truefalse'){ const sel=document.querySelector(`input[name="opt_${q.qid}"]:checked`); return sel?sel.value:null; } const nodes=document.querySelectorAll(`input[name="opt_${q.qid}"]`); const vals=[]; for(let i=0;i<nodes.length;i++) if(nodes[i].checked) vals.push(nodes[i].value); return q.type==='single'?(vals[0]||null):vals.sort().join(''); }
+  function checkAnswer(q, selected){ if(selected==null||selected==='') return false; if(q.type==='truefalse') return (q.answer? 'T':'F')===selected; if(q.type==='single') return (q.answer||'').charAt(0)===selected; if(q.type==='multiple') return (q.answer||'')===selected; return false; }
+  function formatAnswer(q){ if(q.type==='truefalse') return `正确答案：<b>${q.answer?'正确':'错误'}</b>`; const L=['A','B','C','D']; const ansLetters=q.type==='single'?(q.answer||'').charAt(0):(q.answer||''); let out=['正确答案：<b>'+ansLetters+'</b>','<div class="hr"></div>']; for(let i=0;i<q.options.length;i++){ if(!q.options[i]) continue; const mark= ansLetters.indexOf(L[i])>-1?'✅':'—'; out.push(`${mark} <b>${L[i]}.</b> ${escapeHtml(q.options[i])}`); } return '<div class="ans">'+out.join('<br/>')+'</div>'; }
+
+  function renderFlash(){ listPane.classList.add('hidden'); examPane.classList.add('hidden'); flashPane.classList.remove('hidden'); const pool=pickList(); if(pool.length===0){ flashPane.innerHTML='<div class="card">没有符合条件的题目。</div>'; return; } let idx=0; flashPane.innerHTML = `
+      <div class="row" style="margin-bottom:10px"><div class="pill">闪卡 · ${pool.length} 题</div><div class="progress" style="flex:1"><span style="width:0%"></span></div></div>
+      <div class="card" id="flashCard"><div class="qhead"><div class="qid">${pool[0].qid}</div><div class="qtype">闪卡</div></div>
+        <div class="qtext" id="fc_q"></div><div class="opts" id="fc_opts"></div><div class="ans hidden" id="fc_ans"></div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="revealBtn">翻牌/显示答案</button><button class="btn ghost" id="knowBtn">认识</button><button class="btn ghost" id="dontBtn">不认识</button><div style="flex:1"></div><button class="btn" id="prevBtn">上一题</button><button class="btn" id="nextBtn">下一题</button></div>
+      </div>`;
+    function paint(){ const q=pool[idx]; document.querySelector('.progress>span').style.width=Math.round(100*(idx)/pool.length)+'%'; document.querySelector('#flashCard .qid').textContent=q.qid; document.getElementById('fc_q').innerHTML=escapeHtml(q.question); document.getElementById('fc_opts').innerHTML=renderOptions(q); document.getElementById('fc_ans').classList.add('hidden'); document.getElementById('fc_ans').innerHTML=formatAnswer(q); }
+    function mark(know){ const q=pool[idx]; setProgress(q, know?'right':'wrong', true); }
+    document.getElementById('revealBtn').onclick=()=>document.getElementById('fc_ans').classList.toggle('hidden');
+    document.getElementById('knowBtn').onclick=()=>{ mark(true); next(); };
+    document.getElementById('dontBtn').onclick=()=>{ mark(false); next(); };
+    document.getElementById('prevBtn').onclick=()=>{ idx=Math.max(0,idx-1); paint(); };
+    function next(){ idx=Math.min(pool.length-1,idx+1); paint(); }
+    document.getElementById('nextBtn').onclick=next; paint();
+  }
+
+  function renderExam(){ listPane.classList.add('hidden'); flashPane.classList.add('hidden'); examPane.classList.remove('hidden'); const pool=pickList(); if(pool.length===0){ examPane.innerHTML='<div class="card">没有可用于考试的题目。</div>'; return; } examPane.innerHTML=`
+    <div class="card"><div class="exambar"><div class="pill">模拟考试</div>
+      <div>试题数量：<input id="examCount" type="number" min="1" max="${Q.length}" step="1" value="${100}" style="width:100px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px"/></div>
+      <div>限时（分钟）：<input id="examTime" type="number" min="0" step="10" value="90" style="width:100px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px"/></div>
+      <button id="startExam" class="btn primary">开始</button></div></div><div id="examRun"></div>`;
+    document.getElementById('startExam').onclick=()=>start();
+    function start(){ let count=parseInt(document.getElementById('examCount').value||'0',10); const limitMin=parseInt(document.getElementById('examTime').value||'0',10); count=Math.max(1,Math.min(count,pool.length)); const sample=pool.slice(); shuffle(sample); const qs=sample.slice(0,count); let remain=limitMin>0?limitMin*60:0; let timer=null; const run=document.getElementById('examRun'); run.innerHTML=`
+      <div class="row" style="margin:12px 0"><div class="pill">题量：${qs.length}</div><div class="pill">用时：<span id="spent">0:00</span></div><div class="pill">倒计时：<span id="countdown">${limitMin>0?fmtTime(remain):'无'}</span></div><button id="submitExam" class="btn">交卷</button></div>
+      <div id="examGrid" class="grid"></div>`; const startTs=Date.now();
+      if(limitMin>0) timer=setInterval(()=>{ remain--; setText('#countdown',fmtTime(Math.max(0,remain))); setText('#spent',fmtTime(Math.floor((Date.now()-startTs)/1000))); if(remain<=0){ clearInterval(timer); grade(); } },1000);
+      else setInterval(()=>setText('#spent',fmtTime(Math.floor((Date.now()-startTs)/1000))),1000);
+      const eg=document.getElementById('examGrid'); qs.forEach(q=>{ const div=document.createElement('div'); div.className='card'; div.innerHTML=`
+        <div class="qhead"><div class="qid">${q.qid}</div><div class="qtype">${q.type==='single'?'单选':q.type==='multiple'?'多选':'判断'}题</div></div>
+        <div class="qtext">${escapeHtml(q.question)}</div><div class="opts">${renderOptions(q)}</div><div class="feedback"></div>`; eg.appendChild(div); });
+      on('#submitExam','click', grade);
+      function grade(){ if(timer) clearInterval(timer); let right=0,wrong=0; const cards=eg.querySelectorAll('.card'); qs.forEach((q,idx)=>{ const card=cards[idx]; const fb=card.querySelector('.feedback'); const selected=getSelected(q); const ok=checkAnswer(q,selected); if(ok) right++; else wrong++; fb.innerHTML= ok?'<span class="good">✅ 正确</span>':'<span class="bad">❌ 错误</span>'+formatAnswer(q,selected); setProgress(q, ok?'right':'wrong', true); }); saveProgress(); const score=Math.round(100*right/qs.length); const summary=document.createElement('div'); summary.className='card'; summary.innerHTML=`<div style="font-size:18px;font-weight:700;margin-bottom:6px">成绩：${score} 分</div><div>正确 ${right} / ${qs.length} · 错误 ${wrong}</div>`; run.prepend(summary); window.scrollTo({top:0,behavior:'smooth'}); }
+    }
+  }
+
+  function setText(sel, txt){ document.querySelector(sel).textContent = txt; }
+  function fmtTime(sec){ const m=Math.floor(sec/60), s=sec%60; return m+":"+(s<10?"0"+s:s); }
+
+  function switchMode(){ if(filters.mode==='browse' || filters.mode==='wrong'){ listPane.classList.remove('hidden'); flashPane.classList.add('hidden'); examPane.classList.add('hidden'); resetAndRender(); } else if(filters.mode==='flash') renderFlash(); else if(filters.mode==='exam') renderExam(); }
+
+  // 启动由 bootstrap() 异步完成（不再同步触发 updateStats）
+  bootstrap();
+})();
+</script>
+<!-- Injected: theme & layout scripts -->
+<script>
+(function(){
+  const $ = s=>document.querySelector(s);
+  const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+  const savedTheme=store.get('pref.theme','dark');
+  document.documentElement.setAttribute('data-theme',savedTheme);
+  const savedLayout=store.get('pref.layout','multi');
+  if(savedLayout==='one'){document.body.classList.add('one-col');}
+  const themeSel=$('#themeSelect'); if(themeSel){themeSel.value=savedTheme; themeSel.onchange=e=>{const v=e.target.value;document.documentElement.setAttribute('data-theme',v);store.set('pref.theme',v);};}
+  const layoutSel=$('#layoutSelect'); if(layoutSel){layoutSel.value=(savedLayout==='one'?'one':'multi'); layoutSel.onchange=e=>{const v=e.target.value;document.body.classList.toggle('one-col',v==='one');store.set('pref.layout',v);};}
+  // 自动给题目容器挂 tk-grid（不破坏你现有结构）
+  const cands=Array.from(document.querySelectorAll('#grid,.grid,#listPane,main,.container')).filter(n=>n.children&&n.children.length>3);
+  if(cands.length){ const host=cands[0]; if(!host.classList.contains('tk-grid')) host.classList.add('tk-grid'); }
+})();
+</script>
+<script>
+/* 把“单选/多选/判断”的整块 pill 移到主题/布局那一行 */
+(function(){
+  const toolbar = document.querySelector('.tk-toolbar');
+  // 这三个 ID 是你现有输入框；取任意一个往上找“胶囊”容器
+  const pick = document.querySelector('#f_single') 
+            || document.querySelector('#f_multi') 
+            || document.querySelector('#f_tf');
+  if (toolbar && pick){
+    const pill = pick.closest('.pill') || pick.parentElement;
+    if (pill) {
+      // 移动到 tk-toolbar 的最前面
+      toolbar.insertBefore(pill, toolbar.firstChild);
+      pill.classList.add('pill-filters'); // 方便样式微调
+    }
+  }
+
+
+})();
+</script>
+
+</body>
+</html>
