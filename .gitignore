@@ -1,0 +1,18 @@
+# 数据库和题库数据源不入库
+backend/quiz.db
+backend/quiz.db-journal
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 题库原始数据源(2270 题,可能含版权敏感)
+data/*.xlsx
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
